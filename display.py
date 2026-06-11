@@ -179,7 +179,7 @@ def display_highest_expense(expense):
     formatted_amount = f"{float(amount):,.2f}"
 
     # Print the insight panel with a header, details, and separators
-    print("\n💡 Highest Expense Insight")
+    print("\n Highest Expense Insight")
     print("-" * 32)
     print(f"  Amount      : {formatted_amount}")
     print(f"  Category    : {category}")
