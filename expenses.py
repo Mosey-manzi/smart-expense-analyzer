@@ -75,3 +75,86 @@ def get_all_expenses():
                     Returns an empty list if the file does not exist or has no data.
     """
     return load_expenses()
+
+
+def get_total_spending():
+    """
+    Calculate the total amount spent across all recorded expenses.
+
+    Returns:
+        float: The sum of all expense amounts.
+               Returns 0.0 if there are no expenses.
+    """
+    # Load all expenses from the CSV file
+    expenses = get_all_expenses()
+
+    # Start with a total of zero
+    total = 0.0
+
+    # Add each expense amount to the total
+    for expense in expenses:
+        # Convert amount to float in case it was stored as a string
+        total += float(expense["amount"])
+
+    return total
+
+
+def get_spending_by_category():
+    """
+    Calculate total spending for each category.
+
+    Returns:
+        dict: A dictionary where each key is a category name (str) and each
+              value is the total amount spent in that category (float).
+              Returns an empty dict if there are no expenses.
+
+    Example:
+        {
+            "Food": 12000.0,
+            "Transport": 5000.0
+        }
+    """
+    # Load all expenses from the CSV file
+    expenses = get_all_expenses()
+
+    # Dictionary to hold the running total for each category
+    spending = {}
+
+    for expense in expenses:
+        category = expense["category"]
+        amount = float(expense["amount"])
+
+        # If we haven't seen this category before, start at zero
+        if category not in spending:
+            spending[category] = 0.0
+
+        # Add this expense's amount to the category total
+        spending[category] += amount
+
+    return spending
+
+
+def get_highest_expense():
+    """
+    Find and return the expense with the highest amount.
+
+    Returns:
+        dict: The expense dictionary with the highest amount.
+              Returns None if there are no expenses.
+    """
+    # Load all expenses from the CSV file
+    expenses = get_all_expenses()
+
+    # If there are no expenses, return None
+    if not expenses:
+        return None
+
+    # Assume the first expense is the highest to start
+    highest = expenses[0]
+
+    # Compare each expense to find the one with the largest amount
+    for expense in expenses:
+        if float(expense["amount"]) > float(highest["amount"]):
+            highest = expense
+
+    return highest
