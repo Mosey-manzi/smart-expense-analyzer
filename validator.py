@@ -28,6 +28,7 @@ def validate_amount(raw_input):
     """
     try:
         # Attempt to convert the input string to a float
+        raw_input = raw_input.replace(",", ".")
         amount = float(raw_input)
 
         # The amount must be greater than zero to be valid
