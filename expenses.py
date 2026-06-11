@@ -11,7 +11,7 @@ from datetime import date
 from validator import validate_amount, validate_category, validate_description
 
 # Import file I/O helpers from file_handler.py
-from file_handler import save_expense, load_expenses
+from file_handler import save_expense, load_expenses, save_all_expenses
 
 
 def create_expense(amount_input, category_input, description_input):
@@ -36,7 +36,7 @@ def create_expense(amount_input, category_input, description_input):
                                   'expense' is the dictionary that was written to disk.
     """
     # Step 1: Validate the amount
-    amount_input = amount_input.replace(",", ".")
+    # Note: amount cleaning (e.g. comma-to-dot conversion) is handled inside validate_amount
     amount = validate_amount(amount_input)
     if amount is None:
         return (False, "amount")
@@ -158,3 +158,67 @@ def get_highest_expense():
             highest = expense
 
     return highest
+
+
+def filter_expenses_by_category(category_input):
+    """
+    Return a list of expenses that belong to the given category.
+
+    The category name is validated first. If it is not one of the
+    allowed categories, the function returns None.
+
+    Parameters:
+        category_input (str): The category to filter by (e.g. "food", "Transport").
+
+    Returns:
+        list[dict] or None:
+            A list of expense dictionaries matching the category,
+            or None if the category is invalid.
+    """
+    # Validate the category to ensure it is one of the allowed options
+    category = validate_category(category_input)
+    if category is None:
+        return None
+
+    # Load all expenses from the CSV file
+    expenses = get_all_expenses()
+
+    # Build a new list containing only expenses that match the category
+    filtered = []
+    for expense in expenses:
+        if expense["category"] == category:
+            filtered.append(expense)
+
+    return filtered
+
+
+def delete_expense(index):
+    """
+    Delete an expense from the CSV file at the given index.
+
+    The index is zero-based, meaning index 0 refers to the first expense.
+    If the index is out of range, the function returns False and the
+    CSV file is left unchanged.
+
+    Parameters:
+        index (int): The zero-based position of the expense to delete.
+
+    Returns:
+        bool:
+            True  – if the expense was successfully deleted.
+            False – if the index is invalid (out of range).
+    """
+    # Load all current expenses
+    expenses = get_all_expenses()
+
+    # Check that the index is within a valid range
+    if index < 0 or index >= len(expenses):
+        return False
+
+    # Remove the expense at the given index
+    expenses.pop(index)
+
+    # Rewrite the CSV file with the remaining expenses
+    save_all_expenses(expenses)
+
+    return True

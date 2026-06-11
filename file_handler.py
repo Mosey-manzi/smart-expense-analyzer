@@ -65,3 +65,23 @@ def save_expense(expense):
         print("Expense saved successfully.")
     except IOError as e:
         print(f"Error saving expense to CSV file: {e}")
+
+
+def save_all_expenses(expenses):
+    """
+    Overwrite the entire CSV file with the given list of expenses.
+    This is used when we need to remove or modify existing rows.
+
+    Parameters:
+        expenses (list[dict]): The complete list of expense dictionaries
+                               to write to the CSV file.
+    """
+    try:
+        # Open the file in write mode to replace all contents
+        with open(CSV_FILE, mode="w", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=FIELDNAMES)
+            writer.writeheader()
+            for expense in expenses:
+                writer.writerow(expense)
+    except IOError as e:
+        print(f"Error rewriting CSV file: {e}")

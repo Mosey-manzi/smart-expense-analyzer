@@ -11,13 +11,15 @@ from validator import ALLOWED_CATEGORIES
 
 def show_menu():
     """
-    Display the main program menu with six options:
+    Display the main program menu with eight options:
       1. Add Expense
       2. View All Expenses
       3. View Total Spending
       4. View Spending by Category
       5. View Highest Expense
-      6. Exit
+      6. Filter Expenses by Category
+      7. Delete Expense
+      8. Exit
     """
     print("\n===== Smart Expense Analyzer =====")
     print("1. Add Expense")
@@ -25,7 +27,9 @@ def show_menu():
     print("3. View Total Spending")
     print("4. View Spending by Category")
     print("5. View Highest Expense")
-    print("6. Exit")
+    print("6. Filter Expenses by Category")
+    print("7. Delete Expense")
+    print("8. Exit")
     print("==================================")
 
 
@@ -126,9 +130,9 @@ def display_spending_by_category(spending_dict):
                               and each value is the total amount spent (float).
                               Example: {"Food": 12000.0, "Transport": 5000.0}
     """
-    # If the dictionary is empty, show a friendly message and stop
+    # If the dictionary is empty, show the friendly empty message and stop
     if not spending_dict:
-        print("No expenses found.")
+        show_empty_message()
         return
 
     # Print the table header with fixed column widths for neat alignment
@@ -164,9 +168,9 @@ def display_highest_expense(expense):
                                 'category', 'description', and 'date',
                                 or None if there are no expenses.
     """
-    # If no expense was provided, show a friendly message and stop
+    # If no expense was provided, show the friendly empty message and stop
     if expense is None:
-        print("No expenses found.")
+        show_empty_message()
         return
 
     # Extract values from the expense dictionary
@@ -179,10 +183,36 @@ def display_highest_expense(expense):
     formatted_amount = f"{float(amount):,.2f}"
 
     # Print the insight panel with a header, details, and separators
-    print("\n Highest Expense Insight")
+    print("\nHighest Expense Insight")
     print("-" * 32)
     print(f"  Amount      : {formatted_amount}")
     print(f"  Category    : {category}")
     print(f"  Description : {description}")
     print(f"  Date        : {date}")
     print("-" * 32)
+
+
+def show_total_spending(total):
+    """
+    Display the total spending amount with proper number formatting.
+
+    Parameters:
+        total (float): The total amount spent across all expenses.
+    """
+    # Format the amount with commas and 2 decimal places (e.g. 12,345.00)
+    print(f"\nTotal Spending: {total:,.2f}")
+
+
+def show_deletion_success():
+    """
+    Display a success message when an expense has been deleted.
+    """
+    print("\nExpense deleted successfully.")
+
+
+def show_deletion_error():
+    """
+    Display an error message when expense deletion fails
+    (e.g. the provided index was out of range).
+    """
+    print("\n[ERROR] Could not delete expense. Please enter a valid expense number.")

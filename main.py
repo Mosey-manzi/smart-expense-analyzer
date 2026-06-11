@@ -12,15 +12,20 @@ from display import (
     show_expense_table,
     display_spending_by_category,
     display_highest_expense,
+    show_total_spending,
+    show_deletion_success,
+    show_deletion_error,
 )
 
-# Import expense operations for creating, retrieving, and analyzing expenses
+# Import expense operations for creating, retrieving, analyzing, and managing expenses
 from expenses import (
     create_expense,
     get_all_expenses,
     get_total_spending,
     get_spending_by_category,
     get_highest_expense,
+    filter_expenses_by_category,
+    delete_expense,
 )
 
 # Import file handler to ensure the CSV file exists before we start
@@ -34,7 +39,7 @@ def main():
     This function:
     1. Creates the CSV file if it doesn't exist.
     2. Displays a menu in a loop until the user chooses to exit.
-    3. Handles user choices for adding, viewing, and analyzing expenses.
+    3. Handles user choices for adding, viewing, analyzing, and managing expenses.
     """
     # Ensure the CSV file exists before we start working with expenses
     create_csv_if_missing()
@@ -45,7 +50,7 @@ def main():
         show_menu()
 
         # Get the user's menu choice
-        choice = input("\nEnter your choice (1-6): ").strip()
+        choice = input("\nEnter your choice (1-8): ").strip()
 
         # --- Sprint 1 Features ---
 
@@ -86,8 +91,8 @@ def main():
             # Get the total spending from the expenses module
             total = get_total_spending()
 
-            # Display the total with commas and 2 decimal places
-            print(f"\nTotal Spending: {total:,.2f}")
+            # Display the formatted total using the display module
+            show_total_spending(total)
 
         # Handle Option 4: View Spending by Category
         elif choice == "4":
@@ -105,14 +110,59 @@ def main():
             # Display it using the insight panel from the display module
             display_highest_expense(highest)
 
-        # Handle Option 6: Exit
+        # --- Sprint 3 Features ---
+
+        # Handle Option 6: Filter Expenses by Category
         elif choice == "6":
+            # Ask the user which category to filter by
+            category_input = input("Enter category to filter by: ").strip()
+
+            # Get filtered expenses from the expenses module
+            filtered = filter_expenses_by_category(category_input)
+
+            # If the category was invalid, show an error message
+            if filtered is None:
+                show_error_message("category", "Invalid category")
+            else:
+                # Display the filtered list in a table
+                show_expense_table(filtered)
+
+        # Handle Option 7: Delete Expense
+        elif choice == "7":
+            # Show all expenses first so the user can see which one to delete
+            expenses = get_all_expenses()
+            show_expense_table(expenses)
+
+            # Only ask for a number if there are expenses to delete
+            if expenses:
+                # Ask the user which expense number to delete
+                number_input = input("\nEnter expense number to delete: ").strip()
+
+                try:
+                    # Convert the user's input to an integer
+                    expense_number = int(number_input)
+
+                    # Convert the 1-based display number to a 0-based index
+                    index = expense_number - 1
+
+                    # Attempt to delete the expense
+                    if delete_expense(index):
+                        show_deletion_success()
+                    else:
+                        show_deletion_error()
+
+                except ValueError:
+                    # The user entered something that is not a number
+                    show_deletion_error()
+
+        # Handle Option 8: Exit
+        elif choice == "8":
             print("\nThank you for using Smart Expense Analyzer. Goodbye!")
             break
 
         # Handle invalid menu choice
         else:
-            print("\n[ERROR] Invalid choice. Please enter a number from 1 to 6.")
+            print("\n[ERROR] Invalid choice. Please enter a number from 1 to 8.")
 
 
 # Standard Python entry point check
