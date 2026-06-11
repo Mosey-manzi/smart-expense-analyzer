@@ -11,15 +11,21 @@ from validator import ALLOWED_CATEGORIES
 
 def show_menu():
     """
-    Display the main program menu with three options:
+    Display the main program menu with six options:
       1. Add Expense
       2. View All Expenses
-      3. Exit
+      3. View Total Spending
+      4. View Spending by Category
+      5. View Highest Expense
+      6. Exit
     """
     print("\n===== Smart Expense Analyzer =====")
     print("1. Add Expense")
     print("2. View All Expenses")
-    print("3. Exit")
+    print("3. View Total Spending")
+    print("4. View Spending by Category")
+    print("5. View Highest Expense")
+    print("6. Exit")
     print("==================================")
 
 
