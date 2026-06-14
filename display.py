@@ -11,25 +11,33 @@ from validator import ALLOWED_CATEGORIES
 
 def show_menu():
     """
-    Display the main program menu with eight options:
-      1. Add Expense
-      2. View All Expenses
-      3. View Total Spending
-      4. View Spending by Category
-      5. View Highest Expense
-      6. Filter Expenses by Category
-      7. Delete Expense
-      8. Exit
+    Display the main program menu with twelve options:
+      1.  Add Expense
+      2.  View All Expenses
+      3.  View Total Spending
+      4.  View Spending by Category
+      5.  View Highest Expense
+      6.  Filter Expenses by Category
+      7.  Delete Expense
+      8.  Search by Keyword
+      9.  Search by Date
+      10. Expense Statistics
+      11. Edit Expense
+      12. Exit
     """
     print("\n===== Smart Expense Analyzer =====")
-    print("1. Add Expense")
-    print("2. View All Expenses")
-    print("3. View Total Spending")
-    print("4. View Spending by Category")
-    print("5. View Highest Expense")
-    print("6. Filter Expenses by Category")
-    print("7. Delete Expense")
-    print("8. Exit")
+    print("1.  Add Expense")
+    print("2.  View All Expenses")
+    print("3.  View Total Spending")
+    print("4.  View Spending by Category")
+    print("5.  View Highest Expense")
+    print("6.  Filter Expenses by Category")
+    print("7.  Delete Expense")
+    print("8.  Search by Keyword")
+    print("9.  Search by Date")
+    print("10. Expense Statistics")
+    print("11. Edit Expense")
+    print("12. Exit")
     print("==================================")
 
 
@@ -216,3 +224,69 @@ def show_deletion_error():
     (e.g. the provided index was out of range).
     """
     print("\n[ERROR] Could not delete expense. Please enter a valid expense number.")
+
+
+def show_statistics(stats):
+    """
+    Display expense statistics in a readable format.
+
+    The first line shows the total number of expenses, followed by
+    the count for each category.
+
+    Parameters:
+        stats (dict): A dictionary returned by get_expense_statistics().
+                      Expected keys: "total_expenses" plus category names.
+                      Example: {"total_expenses": 15, "Food": 5, "Transport": 3}
+    """
+    # If there are no expenses at all, show the friendly empty message and stop
+    if stats.get("total_expenses", 0) == 0:
+        show_empty_message()
+        return
+
+    # Print the header and total count
+    print("\nExpense Statistics")
+    print("-" * 20)
+    print(f"Total Expenses: {stats['total_expenses']}")
+    print()
+
+    # Print the count for each category (skip the "total_expenses" key)
+    for key, count in stats.items():
+        if key != "total_expenses":
+            print(f"{key}: {count}")
+
+
+def show_edit_success():
+    """
+    Display a success message when an expense has been edited and saved.
+    """
+    print("\nExpense updated successfully.")
+
+
+def show_edit_error():
+    """
+    Display an error message when expense editing fails
+    (e.g. the provided index was out of range).
+    """
+    print("\n[ERROR] Could not update expense. Please enter a valid expense number.")
+
+
+def show_edit_comparison(current_expense, updated_expense):
+    """
+    Display a side-by-side view of the current and updated expense
+    so the user can confirm the changes before saving.
+
+    Parameters:
+        current_expense (dict): The original expense dictionary before editing.
+        updated_expense (dict): The new expense dictionary with proposed changes.
+    """
+    print("\nCurrent Expense:")
+    print(f"  Date        : {current_expense.get('date', 'N/A')}")
+    print(f"  Amount      : {float(current_expense.get('amount', 0)):,.2f}")
+    print(f"  Category    : {current_expense.get('category', 'N/A')}")
+    print(f"  Description : {current_expense.get('description', 'N/A')}")
+
+    print("\nUpdated Expense:")
+    print(f"  Date        : {updated_expense.get('date', 'N/A')}")
+    print(f"  Amount      : {float(updated_expense.get('amount', 0)):,.2f}")
+    print(f"  Category    : {updated_expense.get('category', 'N/A')}")
+    print(f"  Description : {updated_expense.get('description', 'N/A')}")

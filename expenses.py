@@ -222,3 +222,125 @@ def delete_expense(index):
     save_all_expenses(expenses)
 
     return True
+
+
+def search_expenses_by_keyword(keyword):
+    """
+    Search for expenses whose description contains the given keyword.
+    The search is case-insensitive.
+
+    Parameters:
+        keyword (str): The word or phrase to search for inside descriptions.
+
+    Returns:
+        list[dict]: A list of matching expense dictionaries.
+                    Returns an empty list if no matches are found.
+    """
+    # Load all expenses from the CSV file
+    expenses = get_all_expenses()
+
+    # Convert the keyword to lowercase for case-insensitive comparison
+    keyword_lower = keyword.lower()
+
+    # Build a list of expenses whose description contains the keyword
+    results = []
+    for expense in expenses:
+        # Get the description and convert it to lowercase for comparison
+        description = expense.get("description", "").lower()
+        if keyword_lower in description:
+            results.append(expense)
+
+    return results
+
+
+def search_expenses_by_date(date_string):
+    """
+    Search for expenses that match the given date exactly.
+
+    Parameters:
+        date_string (str): The date to search for in YYYY-MM-DD format.
+
+    Returns:
+        list[dict]: A list of matching expense dictionaries.
+                    Returns an empty list if no matches are found.
+    """
+    # Load all expenses from the CSV file
+    expenses = get_all_expenses()
+
+    # Build a list of expenses whose date matches exactly
+    results = []
+    for expense in expenses:
+        if expense.get("date", "") == date_string:
+            results.append(expense)
+
+    return results
+
+
+def get_expense_statistics():
+    """
+    Count the number of expenses in each category and the overall total.
+
+    Returns:
+        dict: A dictionary with a "total_expenses" key for the grand total,
+              plus one key per category with its expense count.
+              Returns {"total_expenses": 0} if there are no expenses.
+
+    Example:
+        {
+            "total_expenses": 15,
+            "Food": 5,
+            "Transport": 3,
+            "Health": 2,
+            "Other": 5
+        }
+    """
+    # Load all expenses from the CSV file
+    expenses = get_all_expenses()
+
+    # Start the stats dictionary with the total count set to zero
+    stats = {"total_expenses": len(expenses)}
+
+    # Count how many expenses belong to each category
+    for expense in expenses:
+        category = expense["category"]
+
+        # If we haven't seen this category before, start at zero
+        if category not in stats:
+            stats[category] = 0
+
+        # Increment the count for this category
+        stats[category] += 1
+
+    return stats
+
+
+def edit_expense(index, updated_expense):
+    """
+    Replace an existing expense at the given index with a new one.
+
+    The index is zero-based. The updated_expense dictionary should already
+    be fully validated before calling this function.
+
+    Parameters:
+        index           (int):  The zero-based position of the expense to replace.
+        updated_expense (dict): The new expense dictionary to store in its place.
+
+    Returns:
+        bool:
+            True  – if the expense was successfully replaced.
+            False – if the index is out of range.
+    """
+    # Load all current expenses
+    expenses = get_all_expenses()
+
+    # Check that the index is within a valid range
+    if index < 0 or index >= len(expenses):
+        return False
+
+    # Replace the expense at the given index
+    expenses[index] = updated_expense
+
+    # Rewrite the CSV file with the updated list
+    save_all_expenses(expenses)
+
+    return True
